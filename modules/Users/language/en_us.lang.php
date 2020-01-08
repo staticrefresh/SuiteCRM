@@ -690,4 +690,8 @@ $mod_strings = array(
     'LBL_GSYNC_CAL' => 'Enable Calendar Sync',
     // END Google Token/Synchronization settings
 
+    // start:SR-User Loggedin Status labels
+    'LBL_IS_USER_LOGGEDIN' => 'Is User logged-in',
+    // end:SR-User Loggedin Status labels
+
 ); // END STRINGS DEFS

@@ -47,6 +47,9 @@ class AOPAssignManager
     private $distributionMethod = '';
     private $aopFallback = true;
     private $assignableUsers = array();
+    //start: is logged in users
+    private $onlyLoggedinUsers = false;
+    //end: is logged in users
 
     /**
      * AOPAssignManager constructor.
@@ -133,6 +136,15 @@ class AOPAssignManager
         if (empty($distributionOptions)) {
             return array();
         }
+
+        //start: is logged in users
+        // Is only assign to logged-in users set?
+        if (isset($distributionOptions[3]))
+        {
+            $this->onlyLoggedinUsers = $distributionOptions[3];
+        }
+        //end: is logged in users
+
         switch ($distributionOptions[0]) {
             case 'security_group':
                 if (file_exists('modules/SecurityGroups/SecurityGroup.php')) {
@@ -164,8 +176,43 @@ class AOPAssignManager
                 break;
         }
 
+        //start: is logged in users
+        if ($this->onlyLoggedinUsers)
+        {
+            $users = $this->getOnlyLoggedinUsers($users);
+        }
+        //end: is logged in users
+
         return $users;
     }
+
+//start: is logged in users
+
+    /**
+     * @param users  - Array of assignable users
+     *
+     * @return array - Array of assignable logged-in users
+     */
+    private function getOnlyLoggedinUsers($users)
+    {
+        $assignableUsers = array();
+
+        $db = DBManagerFactory::getInstance();
+        $query = "SELECT id_c FROM users_cstm WHERE is_loggedin_c = 1";
+        $res = $db->query($query);
+
+        $loggedinUsers = array();
+        while ($row = $db->fetchByAssoc($res)) {
+            $loggedinUsers[$row['id_c']] ="";
+        }
+
+        $assignableUsers = array_intersect_key($users, $loggedinUsers);
+
+        return $assignableUsers;
+    }
+
+//end: is logged in users
+
 
     /**
      * @return string
