@@ -258,8 +258,11 @@ class CaseUpdatesHook
         $caseUpdate = new AOP_Case_Updates();
         $caseUpdate->name = $email->name;
         $caseUpdate->contact_id = $contact_id;
-        $updateText = $this->unquoteEmail($email->description_html ? $email->description_html : $email->description);
-        $caseUpdate->description = $updateText;
+        // start: Stop the system from creating case updates when a mail is received
+        // $updateText = $this->unquoteEmail($email->description_html ? $email->description_html : $email->description);
+        // $caseUpdate->description = $updateText;
+        $caseUpdate->description = "";
+        // end: Stop the system from creating case updates when a mail is received
         $caseUpdate->internal = false;
         $caseUpdate->case_id = $email->parent_id;
         $caseUpdate->save();
