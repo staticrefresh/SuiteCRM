@@ -198,14 +198,26 @@
           targetCount++;
         }
       });
-      if (targetCount > 0) {
+
+      if (targetCount > 0)
+      {
         $(self.emailComposeView).find('#to_addrs_names').val(targetList);
-        if (targetCount < 2) {
+        if (targetCount < 2)
+        {
           $(self.emailComposeView).find('#parent_type').val(populateModule);
           $(self.emailComposeView).find('#parent_name').val(populateModuleName);
           $(self.emailComposeView).find('#parent_id').val(populateModuleRecord);
         }
       }
+      // start: Modifying code to add "Case #" in the subject line
+      else  // added the else condition
+      {
+        $(self.emailComposeView).find('#name').val(dataEmailName);
+        $(self.emailComposeView).find('#parent_type').val(populateModule);
+        $(self.emailComposeView).find('#parent_name').val(populateModuleName);
+        $(self.emailComposeView).find('#parent_id').val(populateModuleRecord);
+      }
+      // end: Modifying code to add "Case #" in the subject line
 
       $(self.emailComposeView).on('sentEmail', function (event, composeView) {
         composeBox.hide();

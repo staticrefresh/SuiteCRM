@@ -1237,7 +1237,6 @@
     }).done(function (jsonResponse) {
       var response = JSON.parse(jsonResponse);
       if (typeof response.data !== "undefined") {
-        $('.file-attachments').empty();
         $.fn.EmailsComposeView.loadAttachmentDataFromAjaxResponse(response);
       }
       if (typeof response.errors !== "undefined") {
@@ -1270,6 +1269,7 @@
 
   $.fn.EmailsComposeView.loadAttachmentDataFromAjaxResponse = function (response) {
     var isDraft = (typeof response.data.draft !== undefined && response.data.draft ? true : false);
+    $('.file-attachments').empty();
     var inputName = 'template_attachment[]';
     var removeName = 'temp_remove_attachment[]';
     if (isDraft) {
@@ -1281,6 +1281,13 @@
         .attr('type', 'hidden')
         .attr('name', 'removeAttachment')
         .appendTo($('.file-attachments'));
+      if (!isDraft) {
+        $('<input>')
+          .attr('type', 'hidden')
+          .attr('name', 'ignoreParentAttachments')
+          .attr('value', '1')
+          .appendTo($('.file-attachments'));
+      }
       for (i = 0; i < response.data.attachments.length; i++) {
         var id = response.data.attachments[i]['id'];
         var fileGroupContainer = $('<div></div>')
@@ -1325,7 +1332,6 @@
   $.fn.EmailsComposeView.onTemplateSelect = function (args) {
 
     var confirmed = function (args) {
-      var args = JSON.parse(args);
       var form = $('[name="' + args.form_name + '"]');
       $.post('index.php?entryPoint=emailTemplateData', {
         emailTemplateId: args.name_to_value_array.emails_email_templates_idb
@@ -1342,7 +1348,6 @@
     mb.setTitle(SUGAR.language.translate('Emails', 'LBL_CONFIRM_APPLY_EMAIL_TEMPLATE_TITLE'));
     mb.setBody(SUGAR.language.translate('Emails', 'LBL_CONFIRM_APPLY_EMAIL_TEMPLATE_BODY'));
     mb.show();
-    var args = JSON.stringify(args);
 
     mb.on('ok', function () {
       "use strict";
@@ -1377,10 +1382,18 @@
   $.fn.EmailsComposeView.defaults = {
     "tinyMceOptions": {
       skin_url: "themes/default/css",
+      height:400,
       skin: "",
-      plugins: "fullscreen",
+      plugins: [
+                        "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+                        "searchreplace visualblocks visualchars code fullscreen",
+                        "insertdatetime media nonbreaking save table contextmenu directionality",
+                        "emoticons template paste textcolor table"
+                ],
       menubar: false,
-      toolbar: ['fontselect | fontsizeselect | bold italic underline | styleselect'],
+      toolbar1: "code | separator | bold | italic | underline | strikethrough | separator | justifyleft | justifycenter | justifyright | justifyfull | separator | forecolor | backcolor | separator | styleselect | formatselect | fontselect | fontsizeselect",
+      toolbar2: "cut | copy | paste | pastetext | pasteword | selectall | separator | search | replace | separator | bullist | numlist | separator | outdent | indent | separator | ltr | rtl | separator | undo | redo | separator |  link | unlink | anchor | image | separator | sub | sup | separator | charmap | visualblocks",
+      toolbar3: "table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol | separator | hr | removeformat | separator | insertdate | inserttime | separator | preview",
       formats: {
         bold: {inline: 'b'},
         italic: {inline: 'i'},
@@ -1388,7 +1401,8 @@
       },
       convert_urls:true,
       relative_urls:false,
-      remove_script_host:false,
+      remove_script_host:false, 
+     content_style: ".mce-content-body {font-size:10pt;font-family:Arial;}"
     }
   };
 }(jQuery));

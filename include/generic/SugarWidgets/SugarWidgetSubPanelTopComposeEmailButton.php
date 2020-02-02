@@ -97,13 +97,23 @@ class SugarWidgetSubPanelTopComposeEmailButton extends SugarWidgetSubPanelTopBut
 
             $emailUI = new EmailUI();
             $emailUI->appendTick = false;
+
+            // start: Modifying code to add "Case #" in the subject line
+            $case_with_macro = "";
+            if($bean->module_name == 'Cases'){
+                $case_with_macro = str_replace("%1",$bean->case_number,$bean->getEmailSubjectMacro());
+            }
+
+            // concat casw_with_macro in the subject line
             $button = '<a class="email-link" onclick="$(document).openComposeViewModal(this);" data-module="'
             . $bean->module_name . '" data-record-id="'
             . $bean->id . '" data-module-name="'
-            . $bean->name .'" data-email-address="'
+            . $case_with_macro . $bean->name .'" data-email-address="'
             . $bean->email1 .'">'
             . $app_strings['LBL_COMPOSE_EMAIL_BUTTON_LABEL']
             . '</a>';
+            // end: Modifying code to add "Case #" in the subject line
+
         }
 
         return $button;
