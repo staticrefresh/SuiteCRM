@@ -57,6 +57,9 @@ require_once('install/suite_install/SystemEmailTemplates.php');
 installSystemEmailTemplates();
 setSystemEmailTemplatesDefaultConfig();
 
+require_once('install/suite_install/srExtensions.php');
+install_srExtensions();
+
 require_once('modules/Administration/QuickRepairAndRebuild.php');
 $actions = array('clearAll');
 $randc = new RepairAndClear();

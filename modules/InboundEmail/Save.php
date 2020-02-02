@@ -151,6 +151,14 @@ if ($focus->isMailBoxTypeCreateCase() || ($focus->mailbox_type == 'createcase' &
         case 'leastBusy':
         case 'random':
             $stored_options['distribution_options'] = !empty($_REQUEST['distribution_options']) ? $_REQUEST['distribution_options'] : '';
+            //start: is logged in users
+            global $sugar_config;
+            if (!empty($sugar_config['distribute_loggedin_users']))
+            {
+                $stored_options['distribution_options'][] = $sugar_config['distribute_loggedin_users'];
+                $GLOBALS['log']->debug("distribute only to loggedin users: " .$sugar_config['distribute_loggedin_users']);
+            }
+            //end: is logged in users
             break;
         default:
             break;
