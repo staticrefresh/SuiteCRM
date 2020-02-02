@@ -115,8 +115,9 @@ branches:
   only:
     - master
     - develop
+    - freshpot
     - /hotfix.*/
     - /feature.*/
     - /fix.*/
     - /staging.*/
-    - /.*/
+    # - /.*/
